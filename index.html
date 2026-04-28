@@ -15,8 +15,9 @@ body {
     background-size: cover;
 }
 
+/* menos escuro */
 .overlay {
-    background: rgba(0,0,0,0.45);
+    background: rgba(0,0,0,0.35);
     min-height:100vh;
     padding-top:30px;
 }
@@ -27,8 +28,8 @@ h1 {
 
 /* capa */
 .cover {
-    width:200px;
-    height:200px;
+    width:180px;
+    height:180px;
     border-radius:20px;
     margin-top:20px;
     box-shadow:0 0 20px #000;
@@ -36,12 +37,12 @@ h1 {
 
 /* texto */
 .title {
-    font-size:22px;
+    font-size:20px;
     color:#00ff88;
 }
 
 .artist {
-    font-size:18px;
+    font-size:16px;
     color:#ff4444;
 }
 
@@ -51,7 +52,7 @@ button {
     border:none;
     color:white;
     padding:15px 40px;
-    font-size:20px;
+    font-size:18px;
     border-radius:30px;
     margin:10px;
     cursor:pointer;
@@ -62,18 +63,18 @@ button:hover {
     transform:scale(1.1);
 }
 
-/* volume */
+/* volume sempre visível */
 .volume {
-    margin-top:20px;
+    margin-top:25px;
 }
 
 /* rodapé */
 .footer {
     position:fixed;
-    bottom:15px;
+    bottom:10px;
     width:100%;
     font-size:14px;
-    background:rgba(0,0,0,0.6);
+    background:rgba(0,0,0,0.5);
     padding:6px;
 }
 </style>
@@ -86,7 +87,9 @@ button:hover {
 
 <h1>Rádio Mix Total Online</h1>
 
-<img id="cover" class="cover" src="https://i.imgur.com/TvOkUPf.jpeg">
+<img id="cover" class="cover"
+src="https://i.imgur.com/TvOkUPf.jpeg"
+onerror="this.src='https://i.imgur.com/TvOkUPf.jpeg'">
 
 <h2 class="title" id="song">A carregar...</h2>
 <h3 class="artist" id="artist"></h3>
@@ -95,11 +98,12 @@ button:hover {
 <button onclick="stopRadio()">⏹ STOP</button>
 
 <div class="volume">
-Volume:
-<input type="range" min="0" max="1" step="0.01" value="0.8" onchange="setVolume(this.value)">
+🔊 Volume<br>
+<input type="range" min="0" max="1" step="0.01" value="0.8"
+oninput="setVolume(this.value)">
 </div>
 
-<audio id="radio">
+<audio id="radio" preload="none">
     <source src="https://radio-mixtotal.ham-radio-op.net/listen/radio_mix_total/radio.mp3" type="audio/mpeg">
 </audio>
 
@@ -110,32 +114,46 @@ Volume:
 </div>
 
 <script>
+let radio = document.getElementById("radio");
+
+/* PLAY (fix telemóvel) */
 function playRadio() {
-    document.getElementById("radio").play();
+    radio.load();
+    radio.play().catch(() => {
+        alert("⚠️ Clica novamente no PLAY para iniciar o áudio (proteção do telemóvel)");
+    });
 }
 
+/* STOP */
 function stopRadio() {
-    document.getElementById("radio").pause();
+    radio.pause();
 }
 
+/* volume */
 function setVolume(v) {
-    document.getElementById("radio").volume = v;
+    radio.volume = v;
 }
 
-/* 🔥 UPDATE SEM CACHE (FIX TOTAL) */
+/* UPDATE SEM CACHE */
 function update() {
     fetch("https://api.allorigins.win/raw?url=http://141.95.7.173/api/nowplaying/1&_=" + new Date().getTime())
     .then(res => res.json())
     .then(data => {
 
-        document.getElementById("song").innerText = data.now_playing.song.title || "Em direto";
-        document.getElementById("artist").innerText = data.now_playing.song.artist || "";
+        document.getElementById("song").innerText =
+            data.now_playing.song.title || "Em direto";
 
-        /* capa */
-        if (data.now_playing.song.art) {
-            document.getElementById("cover").src = data.now_playing.song.art + "?t=" + new Date().getTime();
+        document.getElementById("artist").innerText =
+            data.now_playing.song.artist || "";
+
+        let cover = data.now_playing.song.art;
+
+        if (cover && cover.includes("http")) {
+            document.getElementById("cover").src =
+                cover + "?t=" + new Date().getTime();
         } else {
-            document.getElementById("cover").src = "https://i.imgur.com/TvOkUPf.jpeg";
+            document.getElementById("cover").src =
+                "https://i.imgur.com/TvOkUPf.jpeg";
         }
 
     })
@@ -145,7 +163,7 @@ function update() {
     });
 }
 
-/* mais rápido */
+/* atualizar rápido */
 setInterval(update, 3000);
 update();
 </script>
