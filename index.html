@@ -11,12 +11,12 @@ body {
     text-align:center;
     color:white;
 
-    /* FUNDO COM LOGO */
-    background: url("https://i.imgur.com/SEU_LOGO_GRANDE.png") no-repeat center center fixed;
+    /* FUNDO COM TEU LOGO */
+    background: url("https://i.imgur.com/TvOkUPf.jpeg") no-repeat center center fixed;
     background-size: cover;
 }
 
-/* camada escura por cima */
+/* camada escura */
 .overlay {
     background: rgba(0,0,0,0.75);
     min-height:100vh;
@@ -27,7 +27,7 @@ h1 {
     font-size:32px;
 }
 
-/* capa */
+/* capa da música */
 .cover {
     width:200px;
     height:200px;
@@ -48,7 +48,7 @@ h1 {
     color:#ff4444;
 }
 
-/* botões animados */
+/* botões */
 button {
     background:linear-gradient(45deg, green, red);
     border:none;
@@ -123,7 +123,6 @@ function update() {
         document.getElementById("song").innerText = data.now_playing.song.title;
         document.getElementById("artist").innerText = data.now_playing.song.artist;
 
-        // CAPA
         if (data.now_playing.song.art) {
             document.getElementById("cover").src = data.now_playing.song.art;
         }
