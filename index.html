@@ -15,7 +15,7 @@ body {
     background-size: cover;
 }
 
-/* menos escuro */
+/* fundo mais leve */
 .overlay {
     background: rgba(0,0,0,0.35);
     min-height:100vh;
@@ -23,7 +23,7 @@ body {
 }
 
 h1 {
-    font-size:32px;
+    font-size:30px;
 }
 
 /* capa */
@@ -35,7 +35,7 @@ h1 {
     box-shadow:0 0 20px #000;
 }
 
-/* texto */
+/* textos */
 .title {
     font-size:20px;
     color:#00ff88;
@@ -56,16 +56,11 @@ button {
     border-radius:30px;
     margin:10px;
     cursor:pointer;
-    transition:0.3s;
 }
 
-button:hover {
-    transform:scale(1.1);
-}
-
-/* volume sempre visível */
+/* volume */
 .volume {
-    margin-top:25px;
+    margin-top:20px;
 }
 
 /* rodapé */
@@ -75,7 +70,7 @@ button:hover {
     width:100%;
     font-size:14px;
     background:rgba(0,0,0,0.5);
-    padding:6px;
+    padding:5px;
 }
 </style>
 
@@ -103,9 +98,7 @@ onerror="this.src='https://i.imgur.com/TvOkUPf.jpeg'">
 oninput="setVolume(this.value)">
 </div>
 
-<audio id="radio" preload="none">
-    <source src="https://radio-mixtotal.ham-radio-op.net/listen/radio_mix_total/radio.mp3" type="audio/mpeg">
-</audio>
+<audio id="radio" preload="none"></audio>
 
 <div class="footer">
 © Rádio Mix Total – Todos os direitos reservados – 2026
@@ -116,12 +109,18 @@ oninput="setVolume(this.value)">
 <script>
 let radio = document.getElementById("radio");
 
-/* PLAY (fix telemóvel) */
+/* 🔥 PLAY CORRIGIDO (TELEMÓVEL + CACHE FIX) */
 function playRadio() {
+    radio.src = "https://radio-mixtotal.ham-radio-op.net/listen/radio_mix_total/radio.mp3?"+Date.now();
     radio.load();
-    radio.play().catch(() => {
-        alert("⚠️ Clica novamente no PLAY para iniciar o áudio (proteção do telemóvel)");
-    });
+
+    let playPromise = radio.play();
+
+    if (playPromise !== undefined) {
+        playPromise.catch(() => {
+            alert("👉 Toca novamente no PLAY (proteção do telemóvel)");
+        });
+    }
 }
 
 /* STOP */
@@ -129,12 +128,12 @@ function stopRadio() {
     radio.pause();
 }
 
-/* volume */
+/* VOLUME */
 function setVolume(v) {
     radio.volume = v;
 }
 
-/* UPDATE SEM CACHE */
+/* 🔥 UPDATE SEM CACHE */
 function update() {
     fetch("https://api.allorigins.win/raw?url=http://141.95.7.173/api/nowplaying/1&_=" + new Date().getTime())
     .then(res => res.json())
@@ -148,7 +147,8 @@ function update() {
 
         let cover = data.now_playing.song.art;
 
-        if (cover && cover.includes("http")) {
+        /* capa melhorada */
+        if (cover && cover.includes("http") && !cover.includes("default")) {
             document.getElementById("cover").src =
                 cover + "?t=" + new Date().getTime();
         } else {
