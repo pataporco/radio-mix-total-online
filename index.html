@@ -13,8 +13,7 @@ body {
     text-align:center;
 }
 
-.logo {
-    width:180px;
+h1 {
     margin-top:20px;
 }
 
@@ -26,6 +25,7 @@ button {
     font-size:20px;
     border-radius:30px;
     margin:10px;
+    cursor:pointer;
 }
 
 .title {
@@ -48,18 +48,19 @@ button {
 <h2 class="title" id="song">A carregar...</h2>
 <h3 class="artist" id="artist"></h3>
 
-<button onclick="play()">▶ PLAY</button>
-<button onclick="stop()">⏹ STOP</button>
+<button onclick="playRadio()">▶ PLAY</button>
+<button onclick="stopRadio()">⏹ STOP</button>
 
-<audio id="radio" src="http://141.95.7.173:8000/radio.mp3"></audio>
+<!-- PLAYER INVISÍVEL -->
+<iframe id="player" src="" width="0" height="0" style="border:0;"></iframe>
 
 <script>
-function play() {
-    document.getElementById("radio").play();
+function playRadio() {
+    document.getElementById("player").src = "http://141.95.7.173/public/radio_mix_total/embed";
 }
 
-function stop() {
-    document.getElementById("radio").pause();
+function stopRadio() {
+    document.getElementById("player").src = "";
 }
 
 function update() {
