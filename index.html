@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Rádio Mix Total Online</title>
+
+<style>
+body {
+    margin:0;
+    background:black;
+    color:white;
+    font-family: Arial;
+    text-align:center;
+}
+
+.logo {
+    width:180px;
+    margin-top:20px;
+}
+
+button {
+    background:linear-gradient(45deg, green, red);
+    border:none;
+    color:white;
+    padding:15px 40px;
+    font-size:20px;
+    border-radius:30px;
+    margin:10px;
+}
+
+.title {
+    font-size:22px;
+    color:#00ff88;
+}
+
+.artist {
+    font-size:18px;
+    color:#ff4444;
+}
+</style>
+
+</head>
+
+<body>
+
+<img src="https://via.placeholder.com/200" class="logo">
+
+<h2 class="title" id="song">A carregar...</h2>
+<h3 class="artist" id="artist"></h3>
+
+<button onclick="play()">▶ PLAY</button>
+<button onclick="stop()">⏹ STOP</button>
+
+<audio id="radio" src="http://141.95.7.173:8000/radio.mp3"></audio>
+
+<script>
+function play() {
+    document.getElementById("radio").play();
+}
+
+function stop() {
+    document.getElementById("radio").pause();
+}
+
+function update() {
+    fetch("http://141.95.7.173/api/nowplaying/1?_=" + new Date().getTime())
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("song").innerText = data.now_playing.song.title;
+        document.getElementById("artist").innerText = data.now_playing.song.artist;
+    });
+}
+
+setInterval(update, 5000);
+update();
+</script>
+
+</body>
+</html>
