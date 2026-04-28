@@ -7,16 +7,48 @@
 <style>
 body {
     margin:0;
-    background:black;
-    color:white;
     font-family: Arial;
     text-align:center;
+    color:white;
+
+    /* FUNDO COM LOGO */
+    background: url("https://i.imgur.com/SEU_LOGO_GRANDE.png") no-repeat center center fixed;
+    background-size: cover;
+}
+
+/* camada escura por cima */
+.overlay {
+    background: rgba(0,0,0,0.75);
+    min-height:100vh;
+    padding-top:30px;
 }
 
 h1 {
+    font-size:32px;
+}
+
+/* capa */
+.cover {
+    width:200px;
+    height:200px;
+    border-radius:20px;
+    margin-top:20px;
+    box-shadow:0 0 20px #000;
+}
+
+/* texto */
+.title {
+    font-size:22px;
+    color:#00ff88;
     margin-top:20px;
 }
 
+.artist {
+    font-size:18px;
+    color:#ff4444;
+}
+
+/* botões animados */
 button {
     background:linear-gradient(45deg, green, red);
     border:none;
@@ -24,18 +56,23 @@ button {
     padding:15px 40px;
     font-size:20px;
     border-radius:30px;
-    margin:10px;
+    margin:15px;
     cursor:pointer;
+    transition:0.3s;
 }
 
-.title {
-    font-size:22px;
-    color:#00ff88;
+button:hover {
+    transform:scale(1.1);
+    box-shadow:0 0 15px red;
 }
 
-.artist {
-    font-size:18px;
-    color:#ff4444;
+/* rodapé */
+.footer {
+    position:fixed;
+    bottom:15px;
+    width:100%;
+    font-size:14px;
+    opacity:0.8;
 }
 </style>
 
@@ -43,17 +80,32 @@ button {
 
 <body>
 
+<div class="overlay">
+
 <h1>Rádio Mix Total Online</h1>
 
+<!-- CAPA -->
+<img id="cover" class="cover" src="" alt="cover">
+
+<!-- TEXTO -->
 <h2 class="title" id="song">A carregar...</h2>
 <h3 class="artist" id="artist"></h3>
 
+<!-- BOTÕES -->
 <button onclick="playRadio()">▶ PLAY</button>
 <button onclick="stopRadio()">⏹ STOP</button>
 
+<!-- AUDIO -->
 <audio id="radio">
     <source src="https://radio-mixtotal.ham-radio-op.net/listen/radio_mix_total/radio.mp3" type="audio/mpeg">
 </audio>
+
+<!-- RODAPÉ -->
+<div class="footer">
+© Rádio Mix Total – Todos os direitos reservados – 2026
+</div>
+
+</div>
 
 <script>
 function playRadio() {
@@ -70,6 +122,11 @@ function update() {
     .then(data => {
         document.getElementById("song").innerText = data.now_playing.song.title;
         document.getElementById("artist").innerText = data.now_playing.song.artist;
+
+        // CAPA
+        if (data.now_playing.song.art) {
+            document.getElementById("cover").src = data.now_playing.song.art;
+        }
     })
     .catch(() => {
         document.getElementById("song").innerText = "Rádio Mix Total Online";
