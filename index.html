@@ -43,7 +43,7 @@ button {
 
 <body>
 
-<img src="https://via.placeholder.com/200" class="logo">
+<h1>Rádio Mix Total Online</h1>
 
 <h2 class="title" id="song">A carregar...</h2>
 <h3 class="artist" id="artist"></h3>
@@ -63,11 +63,15 @@ function stop() {
 }
 
 function update() {
-    fetch("http://141.95.7.173/api/nowplaying/1?_=" + new Date().getTime())
+    fetch("https://api.allorigins.win/raw?url=http://141.95.7.173/api/nowplaying/1")
     .then(res => res.json())
     .then(data => {
         document.getElementById("song").innerText = data.now_playing.song.title;
         document.getElementById("artist").innerText = data.now_playing.song.artist;
+    })
+    .catch(() => {
+        document.getElementById("song").innerText = "Rádio Mix Total Online";
+        document.getElementById("artist").innerText = "Em direto";
     });
 }
 
