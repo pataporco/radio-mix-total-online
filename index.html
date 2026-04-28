@@ -11,14 +11,12 @@ body {
     text-align:center;
     color:white;
 
-    /* FUNDO COM TEU LOGO */
     background: url("https://i.imgur.com/TvOkUPf.jpeg") no-repeat center center fixed;
     background-size: cover;
 }
 
-/* camada escura */
 .overlay {
-    background: rgba(0,0,0,0.75);
+    background: rgba(0,0,0,0.45);
     min-height:100vh;
     padding-top:30px;
 }
@@ -27,7 +25,7 @@ h1 {
     font-size:32px;
 }
 
-/* capa da música */
+/* capa */
 .cover {
     width:200px;
     height:200px;
@@ -40,7 +38,6 @@ h1 {
 .title {
     font-size:22px;
     color:#00ff88;
-    margin-top:20px;
 }
 
 .artist {
@@ -56,14 +53,18 @@ button {
     padding:15px 40px;
     font-size:20px;
     border-radius:30px;
-    margin:15px;
+    margin:10px;
     cursor:pointer;
     transition:0.3s;
 }
 
 button:hover {
     transform:scale(1.1);
-    box-shadow:0 0 15px red;
+}
+
+/* volume */
+.volume {
+    margin-top:20px;
 }
 
 /* rodapé */
@@ -72,7 +73,8 @@ button:hover {
     bottom:15px;
     width:100%;
     font-size:14px;
-    opacity:0.8;
+    background:rgba(0,0,0,0.6);
+    padding:6px;
 }
 </style>
 
@@ -84,23 +86,23 @@ button:hover {
 
 <h1>Rádio Mix Total Online</h1>
 
-<!-- CAPA -->
-<img id="cover" class="cover" src="" alt="cover">
+<img id="cover" class="cover" src="https://i.imgur.com/TvOkUPf.jpeg">
 
-<!-- TEXTO -->
 <h2 class="title" id="song">A carregar...</h2>
 <h3 class="artist" id="artist"></h3>
 
-<!-- BOTÕES -->
 <button onclick="playRadio()">▶ PLAY</button>
 <button onclick="stopRadio()">⏹ STOP</button>
 
-<!-- AUDIO -->
+<div class="volume">
+Volume:
+<input type="range" min="0" max="1" step="0.01" value="0.8" onchange="setVolume(this.value)">
+</div>
+
 <audio id="radio">
     <source src="https://radio-mixtotal.ham-radio-op.net/listen/radio_mix_total/radio.mp3" type="audio/mpeg">
 </audio>
 
-<!-- RODAPÉ -->
 <div class="footer">
 © Rádio Mix Total – Todos os direitos reservados – 2026
 </div>
@@ -116,16 +118,26 @@ function stopRadio() {
     document.getElementById("radio").pause();
 }
 
+function setVolume(v) {
+    document.getElementById("radio").volume = v;
+}
+
+/* 🔥 UPDATE SEM CACHE (FIX TOTAL) */
 function update() {
-    fetch("https://api.allorigins.win/raw?url=http://141.95.7.173/api/nowplaying/1")
+    fetch("https://api.allorigins.win/raw?url=http://141.95.7.173/api/nowplaying/1&_=" + new Date().getTime())
     .then(res => res.json())
     .then(data => {
-        document.getElementById("song").innerText = data.now_playing.song.title;
-        document.getElementById("artist").innerText = data.now_playing.song.artist;
 
+        document.getElementById("song").innerText = data.now_playing.song.title || "Em direto";
+        document.getElementById("artist").innerText = data.now_playing.song.artist || "";
+
+        /* capa */
         if (data.now_playing.song.art) {
-            document.getElementById("cover").src = data.now_playing.song.art;
+            document.getElementById("cover").src = data.now_playing.song.art + "?t=" + new Date().getTime();
+        } else {
+            document.getElementById("cover").src = "https://i.imgur.com/TvOkUPf.jpeg";
         }
+
     })
     .catch(() => {
         document.getElementById("song").innerText = "Rádio Mix Total Online";
@@ -133,7 +145,8 @@ function update() {
     });
 }
 
-setInterval(update, 5000);
+/* mais rápido */
+setInterval(update, 3000);
 update();
 </script>
 
