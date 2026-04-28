@@ -37,12 +37,6 @@ button {
     font-size:18px;
     color:#ff4444;
 }
-
-/* esconder player */
-#player {
-    position:absolute;
-    left:-9999px;
-}
 </style>
 
 </head>
@@ -57,19 +51,17 @@ button {
 <button onclick="playRadio()">▶ PLAY</button>
 <button onclick="stopRadio()">⏹ STOP</button>
 
-<!-- player escondido -->
-<iframe id="player"
-src="https://radio-mixtotal.ham-radio-op.net/public/radio_mix_total/embed"
-width="0" height="0"></iframe>
+<audio id="radio">
+    <source src="https://radio-mixtotal.ham-radio-op.net/listen/radio_mix_total/radio.mp3" type="audio/mpeg">
+</audio>
 
 <script>
 function playRadio() {
-    document.getElementById("player").src =
-    "https://radio-mixtotal.ham-radio-op.net/public/radio_mix_total/embed";
+    document.getElementById("radio").play();
 }
 
 function stopRadio() {
-    document.getElementById("player").src = "";
+    document.getElementById("radio").pause();
 }
 
 function update() {
